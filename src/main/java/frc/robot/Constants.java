@@ -10,6 +10,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -133,5 +134,10 @@ public final class Constants {
 
   public static final class NeoMotorConstants {
     public static final double kFreeSpeedRpm = 5676;
+  }
+
+  public static final class ArmConstants{
+    public static final int KTilt = 7;
+    public static final int KExstend = 8;
   }
 }
