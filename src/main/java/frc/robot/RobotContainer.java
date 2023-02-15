@@ -13,8 +13,11 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
+import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
@@ -118,5 +121,29 @@ public class RobotContainer {
 
     // Run path following command, then stop at the end.
     return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false));
+  }
+
+  public void Raise(){
+//raise to encoder value
+//make button up
+//assign button for up
+// make button for down
+//assign button for down
+  }
+
+  public void Extend(){
+//extend to encoder value
+//make button for left
+//assign button for left
+// make button for right
+//assign  button for left
+  }
+
+  public void reset(Encoder extendEncoder, DigitalInput armswitch){
+    //rests and arm moved down if switch is hit
+    armswitch = new DigitalInput(Constants.Switch.ARM_SWITCH);
+    if (!armswitch.get()){
+        extendEncoder.reset();
+    }
   }
 }

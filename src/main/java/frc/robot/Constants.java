@@ -137,7 +137,11 @@ public final class Constants {
   }
 
   public static final class ArmConstants{
-    public static final int KTilt = 7;
-    public static final int KExstend = 8;
+    public static final int kTilt = 7;
+    public static final int kExstend = 8;
+  }
+
+  public static final class Switch {
+    public static final int ARM_SWITCH = 0;
   }
 }
