@@ -20,7 +20,19 @@ public class Armstuff extends SubsystemBase {
   DigitalInput armswitch = null;
   Encoder extendEncoder = new Encoder(0, 1, false, Encoder.EncodingType.k2X);
   public Armstuff() {
-    
+    m_TiltArm.set(0.5);
+  }
+  public void up (){
+    m_TiltArm.set(-0.5);
+  }
+  public void down(){
+
+  }
+  public void exstend(){
+    m_ExstendedArm.set(Constants.Exstend.ExstendSpeed);
+  }
+  public void retract(){
+    m_ExstendedArm.set(Constants.retract.RetractSpeed);
   }
 
   @Override

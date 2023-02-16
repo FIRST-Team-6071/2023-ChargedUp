@@ -17,10 +17,12 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
-import frc.robot.Constants.ArmConstants;
+//import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
+//import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
+//import frc.robot.subsystems.Armstuff;
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -75,6 +77,7 @@ public class RobotContainer {
         . whileTrue(new RunCommand(
             () -> m_robotDrive.setX(),
             m_robotDrive));
+       
   }
 
   /**
@@ -123,27 +126,14 @@ public class RobotContainer {
     return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false));
   }
 
-  public void Raise(){
-//raise to encoder value
-//make button up
-//assign button for up
-// make button for down
-//assign button for down
-  }
 
-  public void Extend(){
-//extend to encoder value
-//make button for left
-//assign button for left
-// make button for right
-//assign  button for left
-  }
 
   public void reset(Encoder extendEncoder, DigitalInput armswitch){
     //rests and arm moved down if switch is hit
     armswitch = new DigitalInput(Constants.Switch.ARM_SWITCH);
     if (!armswitch.get()){
         extendEncoder.reset();
+        armswitch.close();
     }
   }
 }

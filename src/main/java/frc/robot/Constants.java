@@ -10,7 +10,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
+//import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -144,4 +144,15 @@ public final class Constants {
   public static final class Switch {
     public static final int ARM_SWITCH = 0;
   }
+
+  public static final class Exstend{
+    public static final double ExstendSpeed = 0.8;
+  }
+
+  public static final class retract{
+    public static final double RetractSpeed = 0.8;
+  }
+
+
+  
 }
