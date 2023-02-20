@@ -12,6 +12,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 //import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
 
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
  * numerical or boolean
@@ -138,21 +139,36 @@ public final class Constants {
 
   public static final class ArmConstants{
     public static final int kTilt = 7;
-    public static final int kExstend = 8;
+    public static final int kExtend = 8;
   }
 
   public static final class Switch {
     public static final int ARM_SWITCH = 0;
   }
 
-  public static final class Exstend{
-    public static final double ExstendSpeed = 0.8;
+  public static final class ArmExtendSpeed{
+    public static final double ExtendSpeed = 0.8;
   }
 
-  public static final class retract{
-    public static final double RetractSpeed = 0.8;
+  public static final class ArmDirectionSpeed{
+    public static final double DSpeed = 0.5;
   }
 
+  public static final class MaxETilt{
+    public static int KTMax = 1000;
+  }
+
+  public static final class MinETilt{
+    public static int KTMin = 0;
+  }
+
+  public static final class MaxExtend{
+    public static int KEMax = 1000;
+  }
+
+  public static final class MinRetract{
+    public static int KEMin = 1000;
+  }
 
   
 }

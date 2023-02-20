@@ -13,8 +13,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
-import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.Encoder;
+
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
 //import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
@@ -128,12 +127,12 @@ public class RobotContainer {
 
 
 
-  public void reset(Encoder extendEncoder, DigitalInput armswitch){
+  //public void reset(Encoder extendEncoder, DigitalInput armswitch){
     //rests and arm moved down if switch is hit
-    armswitch = new DigitalInput(Constants.Switch.ARM_SWITCH);
-    if (!armswitch.get()){
-        extendEncoder.reset();
-        armswitch.close();
-    }
-  }
+   // armswitch = new DigitalInput(Constants.Switch.ARM_SWITCH);
+   // if (!armswitch.get()){
+       // extendEncoder.reset();
+      //  armswitch.close();
+   // }
+ // }
 }
