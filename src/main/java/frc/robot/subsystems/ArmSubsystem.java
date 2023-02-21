@@ -43,6 +43,7 @@ if (KTMax > 1000){
 
 if (KTMin == 0){
   // whatever encoder go is in java
+  tiltEncoder.get();
 }
 }
 
@@ -53,6 +54,7 @@ public void extendEncoder(int KEMax, int KEMin){
 
   if (KEMin == 0){
     // whatever encoder go is in java
+    extendEncoder.get();
   }
 }
 
