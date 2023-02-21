@@ -4,6 +4,9 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
 
@@ -24,6 +27,7 @@ public class ArmSubsystem extends SubsystemBase {
     
   }
   public void up (){
+    m_ExtendedArm.set(ControlMode.PercentOutput, Constants.ArmExtendSpeed.ExtendSpeed);
     m_ExtendedArm.set(Constants.ArmExtendSpeed.ExtendSpeed);
   }
   public void down(){
