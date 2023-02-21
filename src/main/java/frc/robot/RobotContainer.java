@@ -18,12 +18,15 @@ import edu.wpi.first.wpilibj.XboxController.Button;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.commands.AlignToTargetCommand;
 import frc.robot.commands.FollowDriveCommand;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.PneumaticsSubsystem;
 import frc.robot.subsystems.ShuffleboardSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import java.util.List;
 
@@ -37,11 +40,14 @@ public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final ShuffleboardSubsystem m_ShuffleboardSubsystem = new ShuffleboardSubsystem();
+  private final PneumaticsSubsystem m_PneumaticsSubsystem = new PneumaticsSubsystem();
 
-  private final FollowDriveCommand c_FollowDriveCommand = new FollowDriveCommand(m_robotDrive);
+
+  private final AlignToTargetCommand c_AlignToTargetCommand = new AlignToTargetCommand(m_robotDrive, m_ShuffleboardSubsystem);
 
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
+  CommandXboxController m_armController = new CommandXboxController(OIConstants.kArmControllerPort);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -78,7 +84,10 @@ public class RobotContainer {
             () -> m_robotDrive.setX(),
             m_robotDrive));
 
-    new JoystickButton(m_driverController, Button.kB.value).onTrue(c_FollowDriveCommand.withTimeout(5));
+    m_armController.leftBumper().onTrue(m_PneumaticsSubsystem.openClaw());
+    m_armController.rightBumper().onTrue(m_PneumaticsSubsystem.closeClaw());
+
+    new JoystickButton(m_driverController, Button.kB.value).whileTrue(c_AlignToTargetCommand);
   }
 
   /**

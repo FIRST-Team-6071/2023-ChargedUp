@@ -9,9 +9,13 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import frc.robot.Robot;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.ShuffleboardSubsystem;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -38,12 +42,7 @@ public class FollowDriveCommand extends PIDCommand {
 
         // This uses the output
         output -> {
-          System.out.println(output);
-
           output = MathUtil.clamp(output / 100, -.5, .5);
-
-          System.out.println(output);
-
           p_DriveSubsystem.drive(0, output, 0, false);
         });
     // Use addRequirements() here to declare subsystem dependencies.
@@ -57,7 +56,7 @@ public class FollowDriveCommand extends PIDCommand {
 
      // Set the controller tolerance - the delta tolerance ensures the robot is stationary at the
      // setpoint before it is considered as having reached the reference
-     getController().setTolerance(.5, 2);
+     getController().setTolerance(0, 2);
   }
 
   // Returns true when the command should end.
