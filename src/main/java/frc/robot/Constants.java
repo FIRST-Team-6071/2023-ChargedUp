@@ -50,15 +50,15 @@ public final class Constants {
     public static final double kBackRightChassisAngularOffset = Math.PI / 2;
 
     // SPARK MAX CAN IDs
-    public static final int kFrontLeftDrivingCanId = 1;
-    public static final int kRearLeftDrivingCanId = 3;
-    public static final int kFrontRightDrivingCanId = 9;
-    public static final int kRearRightDrivingCanId = 12;
+    public static final int kFrontLeftDrivingCanId = 5;
+    public static final int kRearLeftDrivingCanId = 8;
+    public static final int kFrontRightDrivingCanId = 4;
+    public static final int kRearRightDrivingCanId = 1;
 
-    public static final int kFrontLeftTurningCanId = 2;
-    public static final int kRearLeftTurningCanId = 4;
-    public static final int kFrontRightTurningCanId = 33;
-    public static final int kRearRightTurningCanId = 17;
+    public static final int kFrontLeftTurningCanId = 6;
+    public static final int kRearLeftTurningCanId = 7;
+    public static final int kFrontRightTurningCanId = 3;
+    public static final int kRearRightTurningCanId = 2;
 
     public static final boolean kGyroReversed = false;
   }
@@ -116,6 +116,7 @@ public final class Constants {
 
   public static final class OIConstants {
     public static final int kDriverControllerPort = 0;
+    public static final int kArmControllerPort = 1;
   }
 
   public static final class AutoConstants {
@@ -135,6 +136,39 @@ public final class Constants {
 
   public static final class NeoMotorConstants {
     public static final double kFreeSpeedRpm = 5676;
+  }
+
+  public static final class Arm {
+
+    public static final class Tilt {
+      public static final int k_MotorID = 10;
+      public static final double k_NormalSpeed = 0.3;
+      public static final double k_LimitSpeed = 0.1;
+
+      public static final class Encoder {
+        public static final int k_ID = 4;
+        public static final double k_Max = 1000;
+        public static final double k_Min = 0;
+      }
+    }
+
+    public static final class Extension {
+      public static final int k_MotorID = 9;
+      public static final double k_NormalSpeed = 0.3;
+      public static final double k_LimitSpeed = 0.35;
+
+      public static final class Encoder {
+        public static final int k_ID = 9;
+        public static final double k_Max = 1561780;
+        public static final double k_Min = 0;
+      }
+
+      public static final class LimitSwitch {
+        public static final int k_LeftID = 9;
+        public static final int k_RightID = 8;
+      }
+    }
+
   }
 
   public static final class ArmConstants{

@@ -16,16 +16,20 @@ import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 //import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
 //import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.subsystems.ArmSubsystem;
 //import frc.robot.subsystems.Armstuff;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.ShuffleboardSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import java.util.List;
 
@@ -38,9 +42,12 @@ import java.util.List;
 public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
+  private final ArmSubsystem m_Arm = new ArmSubsystem();
+  private final ShuffleboardSubsystem m_ShuffleboardSubsystem = new ShuffleboardSubsystem(m_Arm);
 
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
+  CommandXboxController m_armController = new CommandXboxController(OIConstants.kArmControllerPort);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -76,7 +83,24 @@ public class RobotContainer {
         . whileTrue(new RunCommand(
             () -> m_robotDrive.setX(),
             m_robotDrive));
-       
+    
+
+    m_armController.rightBumper()
+        .onTrue(new RunCommand(
+            () -> m_Arm.Retract(), 
+            m_Arm ))
+        .onFalse(new RunCommand(
+            () -> m_Arm.StopExtension(), 
+            m_Arm));
+
+    m_armController.leftBumper()
+        .onTrue(new RunCommand(
+            () -> m_Arm.Extend(), 
+            m_Arm))
+        .onFalse(new RunCommand(
+            () -> m_Arm.StopExtension(), 
+            m_Arm ));
+
   }
 
   /**
@@ -124,15 +148,4 @@ public class RobotContainer {
     // Run path following command, then stop at the end.
     return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false));
   }
-
-
-
-  //public void reset(Encoder extendEncoder, DigitalInput armswitch){
-    //rests and arm moved down if switch is hit
-   // armswitch = new DigitalInput(Constants.Switch.ARM_SWITCH);
-   // if (!armswitch.get()){
-       // extendEncoder.reset();
-      //  armswitch.close();
-   // }
- // }
 }
