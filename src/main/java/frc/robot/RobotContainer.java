@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -13,7 +14,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
-
+import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -25,6 +26,7 @@ import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.ArmSubsystem;
 //import frc.robot.subsystems.Armstuff;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.PneumaticsSubsystem;
 import frc.robot.subsystems.ShuffleboardSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -43,7 +45,8 @@ public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final ArmSubsystem m_Arm = new ArmSubsystem();
-  private final ShuffleboardSubsystem m_ShuffleboardSubsystem = new ShuffleboardSubsystem(m_Arm);
+  private final PneumaticsSubsystem m_Pneumatics = new PneumaticsSubsystem();
+  private final ShuffleboardSubsystem m_ShuffleboardSubsystem = new ShuffleboardSubsystem(m_Arm, m_robotDrive);
 
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
@@ -55,6 +58,7 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the button bindings
     configureButtonBindings();
+    CameraServer.startAutomaticCapture();
 
     // Configure default commands
     m_robotDrive.setDefaultCommand(
@@ -62,9 +66,9 @@ public class RobotContainer {
         // Turning is controlled by the X axis of the right stick.
         new RunCommand(
             () -> m_robotDrive.drive(
-                MathUtil.applyDeadband(-m_driverController.getLeftY(), 0.06),
-                MathUtil.applyDeadband(-m_driverController.getLeftX(), 0.06),
-                MathUtil.applyDeadband(-m_driverController.getRightX(), 0.06),
+                MathUtil.applyDeadband(m_driverController.getLeftY(), 0.06),
+                MathUtil.applyDeadband(m_driverController.getLeftX(), 0.06),
+                MathUtil.applyDeadband(m_driverController.getRightX(), 0.06),
                 true),
             m_robotDrive));
   }
@@ -79,13 +83,21 @@ public class RobotContainer {
    * {@link JoystickButton}.
    */
   private void configureButtonBindings() {
-    new JoystickButton(m_driverController, Button.kA.value)
+    // Driver Controls
+    new JoystickButton(m_driverController, Button.kB.value)
         . whileTrue(new RunCommand(
             () -> m_robotDrive.setX(),
             m_robotDrive));
+
+    new JoystickButton(m_driverController, Button.kX.value)
+        .onTrue(m_robotDrive.ToggleSlowDriveMode());
+
+    new JoystickButton(m_driverController, Button.kY.value)
+        .onTrue(m_robotDrive.ToggleFastDriveMode());
     
 
-    m_armController.rightBumper()
+    // Arm Controls
+    m_armController.rightTrigger()
         .onTrue(new RunCommand(
             () -> m_Arm.Retract(), 
             m_Arm ))
@@ -93,7 +105,7 @@ public class RobotContainer {
             () -> m_Arm.StopExtension(), 
             m_Arm));
 
-    m_armController.leftBumper()
+    m_armController.leftTrigger()
         .onTrue(new RunCommand(
             () -> m_Arm.Extend(), 
             m_Arm))
@@ -101,6 +113,18 @@ public class RobotContainer {
             () -> m_Arm.StopExtension(), 
             m_Arm ));
 
+    // Arm Controls
+    m_armController.povUp()
+        .onTrue(m_Arm.TiltUp());
+
+    m_armController.povDown()   
+        .onTrue(m_Arm.TiltDown());
+
+    m_armController.a()
+        .onTrue(m_Pneumatics.openClaw());
+
+    m_armController.b()
+        .onTrue(m_Pneumatics.closeClaw());
   }
 
   /**

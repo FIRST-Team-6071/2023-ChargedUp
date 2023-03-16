@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -13,6 +14,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.ADIS16470_IMU;
 import frc.robot.Constants.DriveConstants;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 
@@ -40,6 +42,9 @@ public class DriveSubsystem extends SubsystemBase {
 
   // The gyro sensor
   private final ADIS16470_IMU m_gyro = new ADIS16470_IMU();
+
+  // Drive Mode
+  private int driveMode = 0; // 0 = Normal, 1 = Fast, 2 = Slow
 
   // Odometry class for tracking robot pose
   SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
@@ -105,6 +110,28 @@ public class DriveSubsystem extends SubsystemBase {
    *                      field.
    */
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
+    if (xSpeed > -0.1 && xSpeed < 0.1) xSpeed = 0;
+    if (ySpeed > -0.1 && ySpeed < 0.1) ySpeed = 0;
+    if (rot > -0.1 && rot < 0.1) rot = 0;
+
+    switch (driveMode) {
+      case 1:
+        xSpeed = MathUtil.clamp(xSpeed, -1, 1);
+        ySpeed = MathUtil.clamp(ySpeed, -1, 1);
+        rot = MathUtil.clamp(rot, -1, 1);
+        break;
+      
+      case 2:
+        xSpeed *= 0.33;
+        ySpeed *= 0.33;
+        rot *= 0.33;
+        break;
+
+      default:
+        xSpeed = MathUtil.clamp(xSpeed, -0.66, 0.66);
+        ySpeed = MathUtil.clamp(ySpeed, -0.66, 0.66);
+        break;
+    }
     // Adjust input based on max speed
     xSpeed *= DriveConstants.kMaxSpeedMetersPerSecond;
     ySpeed *= DriveConstants.kMaxSpeedMetersPerSecond;
@@ -157,6 +184,26 @@ public class DriveSubsystem extends SubsystemBase {
   /** Zeroes the heading of the robot. */
   public void zeroHeading() {
     m_gyro.reset();
+  }
+
+  public CommandBase ToggleSlowDriveMode() {
+    return runOnce(
+      () -> {
+        if (driveMode == 2) driveMode = 0;
+        else { driveMode = 2; }
+      });
+  }
+
+  public CommandBase ToggleFastDriveMode() {
+    return runOnce(
+      () -> {
+        if (driveMode == 1) driveMode = 0;
+        else { driveMode = 1; }
+      });
+  }
+
+  public int GetDriveMode() {
+    return driveMode;
   }
 
   /**

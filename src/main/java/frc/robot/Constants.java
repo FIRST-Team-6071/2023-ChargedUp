@@ -12,7 +12,6 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 //import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
 
-
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
  * numerical or boolean
@@ -64,12 +63,15 @@ public final class Constants {
   }
 
   public static final class ModuleConstants {
-    // The MAXSwerve module can be configured with one of three pinion gears: 12T, 13T, or 14T.
-    // This changes the drive speed of the module (a pinion gear with more teeth will result in a
+    // The MAXSwerve module can be configured with one of three pinion gears: 12T,
+    // 13T, or 14T.
+    // This changes the drive speed of the module (a pinion gear with more teeth
+    // will result in a
     // robot that drives faster).
     public static final int kDrivingMotorPinionTeeth = 13;
 
-    // Invert the turning encoder, since the output shaft rotates in the opposite direction of
+    // Invert the turning encoder, since the output shaft rotates in the opposite
+    // direction of
     // the steering motor in the MAXSwerve Module.
     public static final boolean kTurningEncoderInverted = true;
 
@@ -77,7 +79,8 @@ public final class Constants {
     public static final double kDrivingMotorFreeSpeedRps = NeoMotorConstants.kFreeSpeedRpm / 60;
     public static final double kWheelDiameterMeters = 0.0762;
     public static final double kWheelCircumferenceMeters = kWheelDiameterMeters * Math.PI;
-    // 45 teeth on the wheel's bevel gear, 22 teeth on the first-stage spur gear, 15 teeth on the bevel pinion
+    // 45 teeth on the wheel's bevel gear, 22 teeth on the first-stage spur gear, 15
+    // teeth on the bevel pinion
     public static final double kDrivingMotorReduction = (45.0 * 22) / (kDrivingMotorPinionTeeth * 15);
     public static final double kDriveWheelFreeSpeedRps = (kDrivingMotorFreeSpeedRps * kWheelCircumferenceMeters)
         / kDrivingMotorReduction;
@@ -138,17 +141,28 @@ public final class Constants {
     public static final double kFreeSpeedRpm = 5676;
   }
 
+  public static final class Pneumatics {
+    public static final int k_ModuleID = 1;
+
+    public static final class Claw {
+      public static final int k_OpenSolID = 7;
+      public static final int k_CloseSolID = 6;
+    }
+
+  }
+
   public static final class Arm {
 
     public static final class Tilt {
       public static final int k_MotorID = 10;
-      public static final double k_NormalSpeed = 0.3;
+      public static final double k_NormalSpeed = -0.4;
       public static final double k_LimitSpeed = 0.1;
 
       public static final class Encoder {
-        public static final int k_ID = 4;
-        public static final double k_Max = 1000;
-        public static final double k_Min = 0;
+        public static final int k_ID = 7;
+        public static final double k_Offset = 0.0907;
+        public static final double k_Max = 0.2230;
+        public static final double k_Min = 0.0009;
       }
     }
 
@@ -170,39 +184,4 @@ public final class Constants {
     }
 
   }
-
-  public static final class ArmConstants{
-    public static final int kTilt = 7;
-    public static final int kExtend = 8;
-  }
-
-  public static final class Switch {
-    public static final int ARM_SWITCH = 0;
-  }
-
-  public static final class ArmExtendSpeed{
-    public static final double ExtendSpeed = 0.8;
-  }
-
-  public static final class ArmDirectionSpeed{
-    public static final double DSpeed = 0.5;
-  }
-
-  public static final class MaxETilt{
-    public static int KTMax = 1000;
-  }
-
-  public static final class MinETilt{
-    public static int KTMin = 0;
-  }
-
-  public static final class MaxExtend{
-    public static int KEMax = 1000;
-  }
-
-  public static final class MinRetract{
-    public static int KEMin = 1000;
-  }
-
-  
 }
