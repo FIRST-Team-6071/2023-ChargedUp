@@ -59,7 +59,7 @@ public final class Constants {
     public static final int kFrontRightTurningCanId = 3;
     public static final int kRearRightTurningCanId = 2;
 
-    public static final boolean kGyroReversed = false;
+    public static final boolean kGyroReversed = true;
   }
 
   public static final class ModuleConstants {
@@ -159,22 +159,22 @@ public final class Constants {
       public static final double k_LimitSpeed = 0.1;
 
       public static final class Encoder {
-        public static final int k_ID = 7;
-        public static final double k_Offset = 0.0907;
-        public static final double k_Max = 0.2230;
-        public static final double k_Min = 0.0009;
+        public static final int k_ID = 0;
+        public static final double k_Offset = 0.56194;
+        public static final double k_Max = 0.2117;
+        public static final double k_Min = 0.0;
       }
     }
 
     public static final class Extension {
       public static final int k_MotorID = 9;
-      public static final double k_NormalSpeed = 0.3;
-      public static final double k_LimitSpeed = 0.35;
+      public static final double k_NormalSpeed = -0.7;
+      public static final double k_LimitSpeed = -0.35;
 
       public static final class Encoder {
         public static final int k_ID = 9;
         public static final double k_Max = 1561780;
-        public static final double k_Min = 0;
+        public static final double k_Min = -5;
       }
 
       public static final class LimitSwitch {

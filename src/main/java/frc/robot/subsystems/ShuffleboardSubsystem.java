@@ -1,4 +1,4 @@
-// Copyright (c) FIRST and other WPILib contributors.
+ // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
@@ -29,7 +29,18 @@ public class ShuffleboardSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Arm Position Percent", (m_Arm.GetArmExtensionEncoderValue() % Constants.Arm.Extension.Encoder.k_Max));
     SmartDashboard.putNumber("Arm Position Slash", (m_Arm.GetArmExtensionEncoderValue() / Constants.Arm.Extension.Encoder.k_Max));
     SmartDashboard.putNumber("Arm Tilt Position", m_Arm.GetTiltEncoderValue());
+    SmartDashboard.putNumber("Raw Arm Tilt Position", m_Arm.GetRawTiltEncoderPosition());
     SmartDashboard.putNumber("Wanted Arm Tilt Position", m_Arm.GetWantedArmTiltPosition());
+    
+    SmartDashboard.putNumber("Pose X", m_Drive.m_odometry.getPoseMeters().getX());
+    SmartDashboard.putNumber("Pose Y", m_Drive.m_odometry.getPoseMeters().getY());
+
+    SmartDashboard.putNumber("Angle Value", m_Drive.getAngleValue());
+    SmartDashboard.putNumber("Pitch Value", m_Drive.getPitchValue());
+    SmartDashboard.putNumber("Roll Value", m_Drive.getRollValue());
+    // SmartDashboard.putNumber("Wanted Arm Tilt Position", m_Arm.GetWantedArmTiltPosition());
+
+
 
     switch (m_Drive.GetDriveMode()) {
       case 1:

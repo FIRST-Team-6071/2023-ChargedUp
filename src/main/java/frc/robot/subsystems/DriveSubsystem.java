@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import com.kauailabs.navx.frc.AHRS;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -42,14 +44,15 @@ public class DriveSubsystem extends SubsystemBase {
 
   // The gyro sensor
   private final ADIS16470_IMU m_gyro = new ADIS16470_IMU();
+  private final AHRS m_navX = new AHRS();
 
   // Drive Mode
   private int driveMode = 0; // 0 = Normal, 1 = Fast, 2 = Slow
 
   // Odometry class for tracking robot pose
-  SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
+  public SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
       DriveConstants.kDriveKinematics,
-      Rotation2d.fromDegrees(m_gyro.getAngle()),
+      Rotation2d.fromDegrees(-m_navX.getAngle()),
       new SwerveModulePosition[] {
           m_frontLeft.getPosition(),
           m_frontRight.getPosition(),
@@ -59,13 +62,15 @@ public class DriveSubsystem extends SubsystemBase {
 
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
+    m_navX.reset();
+    m_navX.calibrate();
   }
 
   @Override
   public void periodic() {
     // Update the odometry in the periodic block
     m_odometry.update(
-        Rotation2d.fromDegrees(m_gyro.getAngle()),
+        Rotation2d.fromDegrees(-m_navX.getAngle()),
         new SwerveModulePosition[] {
             m_frontLeft.getPosition(),
             m_frontRight.getPosition(),
@@ -90,7 +95,7 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public void resetOdometry(Pose2d pose) {
     m_odometry.resetPosition(
-        Rotation2d.fromDegrees(m_gyro.getAngle()),
+        Rotation2d.fromDegrees(-m_navX.getAngle()),
         new SwerveModulePosition[] {
             m_frontLeft.getPosition(),
             m_frontRight.getPosition(),
@@ -109,10 +114,13 @@ public class DriveSubsystem extends SubsystemBase {
    * @param fieldRelative Whether the provided x and y speeds are relative to the
    *                      field.
    */
-  public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
-    if (xSpeed > -0.1 && xSpeed < 0.1) xSpeed = 0;
-    if (ySpeed > -0.1 && ySpeed < 0.1) ySpeed = 0;
-    if (rot > -0.1 && rot < 0.1) rot = 0;
+  public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative, boolean shouldHaveDeadzone) {
+    if (shouldHaveDeadzone)
+    {
+      if (xSpeed > -0.1 && xSpeed < 0.1) xSpeed = 0;
+      if (ySpeed > -0.1 && ySpeed < 0.1) ySpeed = 0;
+      if (rot > -0.1 && rot < 0.1) rot = 0;
+    }
 
     switch (driveMode) {
       case 1:
@@ -139,7 +147,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     var swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(
         fieldRelative
-            ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, Rotation2d.fromDegrees(m_gyro.getAngle()))
+            ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, Rotation2d.fromDegrees(-m_navX.getAngle()))
             : new ChassisSpeeds(xSpeed, ySpeed, rot));
     SwerveDriveKinematics.desaturateWheelSpeeds(
         swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond);
@@ -181,12 +189,27 @@ public class DriveSubsystem extends SubsystemBase {
     m_rearRight.resetEncoders();
   }
 
-  /** Zeroes the heading of the robot. */
-  public void zeroHeading() {
-    m_gyro.reset();
+  public double GetRobotPoseY() {
+    return m_odometry.getPoseMeters().getY();
   }
 
-  public CommandBase ToggleSlowDriveMode() {
+  public double GetRobotPoseX() {
+    return m_odometry.getPoseMeters().getX();
+  }
+
+  /** Zeroes the heading of the robot. */
+  public void zeroHeading() {
+    m_navX.reset();
+  }
+
+  public CommandBase ToggleSlowDriveMode(boolean force) {
+    if (force) {
+      return runOnce(
+      () -> {
+        driveMode = 2;
+      });
+    }
+
     return runOnce(
       () -> {
         if (driveMode == 2) driveMode = 0;
@@ -212,7 +235,19 @@ public class DriveSubsystem extends SubsystemBase {
    * @return the robot's heading in degrees, from -180 to 180
    */
   public double getHeading() {
-    return Rotation2d.fromDegrees(m_gyro.getAngle()).getDegrees();
+    return Rotation2d.fromDegrees(-m_navX.getAngle()).getDegrees();
+  }
+
+  public double getAngleValue() {
+    return m_navX.getAngle();
+  }
+
+  public double getPitchValue() {
+    return m_navX.getPitch();
+  }
+
+  public double getRollValue() {
+    return m_navX.getRoll();
   }
 
   /**
@@ -221,6 +256,6 @@ public class DriveSubsystem extends SubsystemBase {
    * @return The turn rate of the robot, in degrees per second
    */
   public double getTurnRate() {
-    return m_gyro.getRate() * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
+    return m_navX.getRate() * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
   }
 }
