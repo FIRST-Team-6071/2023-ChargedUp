@@ -11,23 +11,25 @@ import frc.robot.Constants;
 public class ShuffleboardSubsystem extends SubsystemBase {
   ArmSubsystem m_Arm;
   DriveSubsystem m_Drive;
+  ArmExtensionSubsystem m_ArmExt;
 
 
   /** Creates a new ShuffleboardSubsystem. */
-  public ShuffleboardSubsystem(ArmSubsystem p_ArmSubsystem, DriveSubsystem p_DriveSubsystem) {
+  public ShuffleboardSubsystem(ArmSubsystem p_ArmSubsystem, DriveSubsystem p_DriveSubsystem, ArmExtensionSubsystem p_ArmExtensionSubsystem) {
     m_Arm = p_ArmSubsystem;
     m_Drive = p_DriveSubsystem;
+    m_ArmExt = p_ArmExtensionSubsystem;
   }
 
   @Override
   public void periodic() {
-    SmartDashboard.putBoolean("Extension Switch Left", m_Arm.extensionSwitchLeft.get());
-    SmartDashboard.putBoolean("Extension Switch Right", m_Arm.extensionSwitchRight.get());
-    SmartDashboard.putBoolean("Has Extension Zeroed", m_Arm.GetHasExtensionZeroed());
+    SmartDashboard.putBoolean("Extension Switch Left", m_ArmExt.extensionSwitchLeft.get());
+    SmartDashboard.putBoolean("Extension Switch Right", m_ArmExt.extensionSwitchRight.get());
+    SmartDashboard.putBoolean("Has Extension Zeroed", m_ArmExt.GetHasExtensionZeroed());
     SmartDashboard.putBoolean("Arm Tilt Encoder Connected", m_Arm.GetTiltEncoderConnected());
-    SmartDashboard.putNumber("Arm Position", m_Arm.GetArmExtensionEncoderValue());
-    SmartDashboard.putNumber("Arm Position Percent", (m_Arm.GetArmExtensionEncoderValue() % Constants.Arm.Extension.Encoder.k_Max));
-    SmartDashboard.putNumber("Arm Position Slash", (m_Arm.GetArmExtensionEncoderValue() / Constants.Arm.Extension.Encoder.k_Max));
+    SmartDashboard.putNumber("Arm Position", m_ArmExt.GetArmExtensionEncoderValue());
+    SmartDashboard.putNumber("Arm Position Percent", (m_ArmExt.GetArmExtensionEncoderValue() % Constants.Arm.Extension.Encoder.k_Max));
+    SmartDashboard.putNumber("Arm Position Slash", (m_ArmExt.GetArmExtensionEncoderValue() / Constants.Arm.Extension.Encoder.k_Max));
     SmartDashboard.putNumber("Arm Tilt Position", m_Arm.GetTiltEncoderValue());
     SmartDashboard.putNumber("Raw Arm Tilt Position", m_Arm.GetRawTiltEncoderPosition());
     SmartDashboard.putNumber("Wanted Arm Tilt Position", m_Arm.GetWantedArmTiltPosition());

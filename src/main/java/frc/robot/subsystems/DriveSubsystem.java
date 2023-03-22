@@ -19,7 +19,6 @@ import frc.robot.Constants.DriveConstants;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-
 public class DriveSubsystem extends SubsystemBase {
   // Create MAXSwerveModules
   private final MAXSwerveModule m_frontLeft = new MAXSwerveModule(
@@ -115,11 +114,13 @@ public class DriveSubsystem extends SubsystemBase {
    *                      field.
    */
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative, boolean shouldHaveDeadzone) {
-    if (shouldHaveDeadzone)
-    {
-      if (xSpeed > -0.1 && xSpeed < 0.1) xSpeed = 0;
-      if (ySpeed > -0.1 && ySpeed < 0.1) ySpeed = 0;
-      if (rot > -0.1 && rot < 0.1) rot = 0;
+    if (shouldHaveDeadzone) {
+      if (xSpeed > -0.1 && xSpeed < 0.1)
+        xSpeed = 0;
+      if (ySpeed > -0.1 && ySpeed < 0.1)
+        ySpeed = 0;
+      if (rot > -0.1 && rot < 0.1)
+        rot = 0;
     }
 
     switch (driveMode) {
@@ -128,7 +129,7 @@ public class DriveSubsystem extends SubsystemBase {
         ySpeed = MathUtil.clamp(ySpeed, -1, 1);
         rot = MathUtil.clamp(rot, -1, 1);
         break;
-      
+
       case 2:
         xSpeed *= 0.33;
         ySpeed *= 0.33;
@@ -205,24 +206,30 @@ public class DriveSubsystem extends SubsystemBase {
   public CommandBase ToggleSlowDriveMode(boolean force) {
     if (force) {
       return runOnce(
-      () -> {
-        driveMode = 2;
-      });
+          () -> {
+            driveMode = 2;
+          });
     }
 
     return runOnce(
-      () -> {
-        if (driveMode == 2) driveMode = 0;
-        else { driveMode = 2; }
-      });
+        () -> {
+          if (driveMode == 2)
+            driveMode = 0;
+          else {
+            driveMode = 2;
+          }
+        });
   }
 
   public CommandBase ToggleFastDriveMode() {
     return runOnce(
-      () -> {
-        if (driveMode == 1) driveMode = 0;
-        else { driveMode = 1; }
-      });
+        () -> {
+          if (driveMode == 1)
+            driveMode = 0;
+          else {
+            driveMode = 1;
+          }
+        });
   }
 
   public int GetDriveMode() {

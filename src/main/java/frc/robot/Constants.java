@@ -168,12 +168,12 @@ public final class Constants {
 
     public static final class Extension {
       public static final int k_MotorID = 9;
-      public static final double k_NormalSpeed = -0.7;
+      public static final double k_NormalSpeed = -1;
       public static final double k_LimitSpeed = -0.35;
 
       public static final class Encoder {
         public static final int k_ID = 9;
-        public static final double k_Max = 1561780;
+        public static final double k_Max = 34541;
         public static final double k_Min = -5;
       }
 

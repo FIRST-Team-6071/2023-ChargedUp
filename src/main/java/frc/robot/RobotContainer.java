@@ -6,40 +6,23 @@ package frc.robot;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
-import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-//import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
-//import frc.robot.Constants.ArmConstants;
-import frc.robot.Constants.AutoConstants;
-import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.AutoBalance;
 import frc.robot.commands.ExtendToPoint;
 import frc.robot.commands.MoveSetDistance;
 import frc.robot.commands.TiltToPoint;
+import frc.robot.subsystems.ArmExtensionSubsystem;
 import frc.robot.subsystems.ArmSubsystem;
-//import frc.robot.subsystems.Armstuff;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.PneumaticsSubsystem;
 import frc.robot.subsystems.ShuffleboardSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import java.util.List;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -50,9 +33,10 @@ import java.util.List;
 public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
+  private final ArmExtensionSubsystem m_ArmExt = new ArmExtensionSubsystem();
   private final ArmSubsystem m_Arm = new ArmSubsystem();
   private final PneumaticsSubsystem m_Pneumatics = new PneumaticsSubsystem();
-  private final ShuffleboardSubsystem m_ShuffleboardSubsystem = new ShuffleboardSubsystem(m_Arm, m_robotDrive);
+  private final ShuffleboardSubsystem m_ShuffleboardSubsystem = new ShuffleboardSubsystem(m_Arm, m_robotDrive, m_ArmExt);
 
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
@@ -64,7 +48,8 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the button bindings
     configureButtonBindings();
-    CameraServer.startAutomaticCapture();
+    CameraServer.startAutomaticCapture(0);
+    CameraServer.startAutomaticCapture(1);
 
     // Configure default commands
     m_robotDrive.setDefaultCommand(
@@ -95,6 +80,12 @@ public class RobotContainer {
             () -> m_robotDrive.setX(),
             m_robotDrive));
 
+    new JoystickButton(m_driverController, Button.kLeftStick.value)
+        . whileTrue(new RunCommand(
+            () -> m_robotDrive.zeroHeading(),
+            m_robotDrive));
+    
+
     new JoystickButton(m_driverController, Button.kX.value)
         .onTrue(m_robotDrive.ToggleSlowDriveMode(false));
 
@@ -104,18 +95,18 @@ public class RobotContainer {
     // Arm Controls
     m_armController.rightTrigger()
         .onTrue(new RunCommand(
-            () -> m_Arm.Retract(), 
+            () -> m_ArmExt.Retract(), 
             m_Arm ))
         .onFalse(new RunCommand(
-            () -> m_Arm.StopExtension(), 
+            () -> m_ArmExt.StopExtension(), 
             m_Arm));
 
     m_armController.leftTrigger()
         .onTrue(new RunCommand(
-            () -> m_Arm.Extend(), 
+            () -> m_ArmExt.Extend(), 
             m_Arm))
         .onFalse(new RunCommand(
-            () -> m_Arm.StopExtension(), 
+            () -> m_ArmExt.StopExtension(), 
             m_Arm ));
 
     // Arm Controls
@@ -135,7 +126,7 @@ public class RobotContainer {
         .onTrue(m_Pneumatics.closeClaw());
     
     m_armController.y()
-        .onTrue(new ExtendToPoint(Constants.Arm.Extension.Encoder.k_Min, m_Arm)
+        .onTrue(new ExtendToPoint(Constants.Arm.Extension.Encoder.k_Min, m_ArmExt)
         .andThen(new TiltToPoint(Constants.Arm.Tilt.Encoder.k_Min, m_Arm)));
     }
 
@@ -146,13 +137,18 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // 0.1529
-    return new ExtendToPoint(Constants.Arm.Extension.Encoder.k_Min, m_Arm)
+    return new ExtendToPoint(Constants.Arm.Extension.Encoder.k_Min, m_ArmExt)
         .andThen(m_Pneumatics.closeClaw())
-        .andThen(new TiltToPoint(0.1529, m_Arm))
-        .andThen(new ExtendToPoint(Constants.Arm.Extension.Encoder.k_Max, m_Arm))
+        .andThen(new TiltToPoint(0.0420, m_Arm))
+        .andThen(new TiltToPoint(0.1529, m_Arm).alongWith(
+            new ExtendToPoint(Constants.Arm.Extension.Encoder.k_Max, m_ArmExt)
+        ))
+        // .andThen(new ExtendToPoint(Constants.Arm.Extension.Encoder.k_Max, m_ArmExt))
         .andThen(m_Pneumatics.openClaw())
-        .andThen(new ExtendToPoint(Constants.Arm.Extension.Encoder.k_Min, m_Arm))
-        .andThen(new TiltToPoint(Constants.Arm.Tilt.Encoder.k_Min, m_Arm))
+        .andThen(new TiltToPoint(Constants.Arm.Tilt.Encoder.k_Min, m_Arm)).alongWith(
+            new ExtendToPoint(Constants.Arm.Extension.Encoder.k_Min, m_ArmExt
+        ))
+        // .andThen(new TiltToPoint(Constants.Arm.Tilt.Encoder.k_Min, m_Arm))
         // .andThen(swerveControllerCommand)
         .andThen(() -> m_robotDrive.drive(0, 0, 0, false, false))
         .andThen(new MoveSetDistance(m_robotDrive, 4.67))
@@ -163,9 +159,6 @@ public class RobotContainer {
             () -> m_robotDrive.setX(),
             m_robotDrive))
         .andThen(() -> m_robotDrive.drive(0, 0, 0, false, false));
-
-        // Run path following command, then stop at the end.
-
 
 
 
