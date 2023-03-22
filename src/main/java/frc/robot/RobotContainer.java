@@ -146,8 +146,8 @@ public class RobotContainer {
 
                 .andThen(m_Pneumatics.openClaw())
 
-                .andThen(new TiltToPoint(Constants.Arm.Tilt.Encoder.k_Min, m_Arm)).alongWith(
-                        new ExtendToPoint(Constants.Arm.Extension.Encoder.k_Min, m_ArmExt))
+                .andThen(new TiltToPoint(Constants.Arm.Tilt.Encoder.k_Min, m_Arm).alongWith(
+                        new ExtendToPoint(Constants.Arm.Extension.Encoder.k_Min, m_ArmExt)))
 
                 .andThen(() -> m_robotDrive.drive(0, 0, 0, false, false))
                 .andThen(new MoveSetDistance(m_robotDrive, 4.67))
