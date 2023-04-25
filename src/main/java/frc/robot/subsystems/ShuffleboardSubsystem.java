@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -12,6 +13,7 @@ public class ShuffleboardSubsystem extends SubsystemBase {
   ArmSubsystem m_Arm;
   DriveSubsystem m_Drive;
   ArmExtensionSubsystem m_ArmExt;
+  SendableChooser<String> m_autoChooser = new SendableChooser<>();
 
 
   /** Creates a new ShuffleboardSubsystem. */
@@ -19,8 +21,14 @@ public class ShuffleboardSubsystem extends SubsystemBase {
     m_Arm = p_ArmSubsystem;
     m_Drive = p_DriveSubsystem;
     m_ArmExt = p_ArmExtensionSubsystem;
-  }
 
+    m_autoChooser.setDefaultOption("Center", "center");
+    m_autoChooser.addOption("Left/Right", "side");
+    m_autoChooser.addOption("Arm Test", "arm");
+    // SmartDashboard.putNumber("Wanted Arm Tilt Position", m_Arm.GetWantedArmTiltPosition());
+    SmartDashboard.putData(m_autoChooser);
+  }
+  
   @Override
   public void periodic() {
     SmartDashboard.putBoolean("Extension Switch Left", m_ArmExt.extensionSwitchLeft.get());
@@ -36,14 +44,11 @@ public class ShuffleboardSubsystem extends SubsystemBase {
     
     SmartDashboard.putNumber("Pose X", m_Drive.m_odometry.getPoseMeters().getX());
     SmartDashboard.putNumber("Pose Y", m_Drive.m_odometry.getPoseMeters().getY());
-
+    
     SmartDashboard.putNumber("Angle Value", m_Drive.getAngleValue());
     SmartDashboard.putNumber("Pitch Value", m_Drive.getPitchValue());
     SmartDashboard.putNumber("Roll Value", m_Drive.getRollValue());
-    // SmartDashboard.putNumber("Wanted Arm Tilt Position", m_Arm.GetWantedArmTiltPosition());
-
-
-
+    
     switch (m_Drive.GetDriveMode()) {
       case 1:
         SmartDashboard.putString("Drive Mode", "Fast");
@@ -58,5 +63,10 @@ public class ShuffleboardSubsystem extends SubsystemBase {
         break;
     }
     // % Constants.Arm.Extension.Encoder.k_Max
+  }
+
+  public String getChosenAuton() {
+    return "side";
+    // return m_autoChooser.getSelected();
   }
 }

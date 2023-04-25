@@ -37,7 +37,7 @@ public class TiltToPoint extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (m_Arm.GetTiltEncoderValue() > tiltPos - 0.010 && m_Arm.GetTiltEncoderValue() < tiltPos + 0.010) {
+    if (m_Arm.GetTiltEncoderValue() > tiltPos - 0.050 && m_Arm.GetTiltEncoderValue() < tiltPos + 0.050) {
       return true;
     }
 

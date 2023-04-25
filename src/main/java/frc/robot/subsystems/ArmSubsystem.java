@@ -24,7 +24,7 @@ public class ArmSubsystem extends SubsystemBase {
   private final VictorSPX m_TiltMotor = new VictorSPX(Constants.Arm.Tilt.k_MotorID);
   DutyCycleEncoder tiltEncoder = new DutyCycleEncoder(Constants.Arm.Tilt.Encoder.k_ID);
   private double wantedTiltPosition = Constants.Arm.Tilt.Encoder.k_Min;
-  PIDController tiltPID = new PIDController(8, 4, 0);
+  PIDController tiltPID = new PIDController(10, 5, 0);
   // 8 4 0
   // 6 0 2
 
@@ -79,6 +79,6 @@ public class ArmSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     double pidOutput = tiltPID.calculate(GetTiltEncoderValue(), wantedTiltPosition);
-    m_TiltMotor.set(VictorSPXControlMode.PercentOutput, -MathUtil.clamp(pidOutput, 0, 0.7));
+    m_TiltMotor.set(VictorSPXControlMode.PercentOutput, -MathUtil.clamp(pidOutput, 0, 0.8));
   }
 }

@@ -28,7 +28,7 @@ public class MoveSetDistance extends PIDCommand {
         // This uses the output
         output -> {
           // Use the output here
-          p_Drive.drive(MathUtil.clamp(output, -0.3, 0.3), 0, 0, false, false);
+          p_Drive.drive(MathUtil.clamp(output, -0.4, 0.4), 0, 0, false, false);
         });
 
     p_Drive.resetOdometry(new Pose2d());

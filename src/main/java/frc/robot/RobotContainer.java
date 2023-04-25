@@ -137,26 +137,58 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
         // 0.1529
-        return new ExtendToPoint(Constants.Arm.Extension.Encoder.k_Min, m_ArmExt)
-                .andThen(m_Pneumatics.closeClaw())
-                .andThen(new TiltToPoint(0.0420, m_Arm))
 
-                .andThen(new TiltToPoint(0.1529, m_Arm).alongWith(
-                        new ExtendToPoint(Constants.Arm.Extension.Encoder.k_Max, m_ArmExt)))
+        switch (m_ShuffleboardSubsystem.getChosenAuton()) {
+            case "center":
+                return new ExtendToPoint(Constants.Arm.Extension.Encoder.k_Min, m_ArmExt)
+                    .andThen(m_Pneumatics.closeClaw())
+                    .andThen(new TiltToPoint(0.1429, m_Arm))
 
-                .andThen(m_Pneumatics.openClaw())
+                    .andThen(new ExtendToPoint(Constants.Arm.Extension.Encoder.k_Max, m_ArmExt))
+                    
+                    .andThen(new WaitCommand(1))
+                    
+                    .andThen(m_Pneumatics.openClaw())
 
-                .andThen(new TiltToPoint(Constants.Arm.Tilt.Encoder.k_Min, m_Arm).alongWith(
-                        new ExtendToPoint(Constants.Arm.Extension.Encoder.k_Min, m_ArmExt)))
+                    .andThen(new ExtendToPoint(16155, m_ArmExt))
 
-                .andThen(() -> m_robotDrive.drive(0, 0, 0, false, false))
-                .andThen(new MoveSetDistance(m_robotDrive, 4.67))
-                .andThen(new MoveSetDistance(m_robotDrive, -3))
-                .andThen(new WaitCommand(.5))
-                .andThen(new AutoBalance(m_robotDrive))
-                .andThen(new RunCommand(
-                        () -> m_robotDrive.setX(),
-                        m_robotDrive));
+                    .andThen(new TiltToPoint(0, m_Arm).alongWith(
+                            new ExtendToPoint(Constants.Arm.Extension.Encoder.k_Min, m_ArmExt)))
 
+                    .andThen(() -> m_robotDrive.drive(0, 0, 0, false, false))
+                    .andThen(new MoveSetDistance(m_robotDrive, 4.67))
+                    .andThen(new MoveSetDistance(m_robotDrive, -2.4))
+                    .andThen(new WaitCommand(.5))
+                    .andThen(new AutoBalance(m_robotDrive))
+                    .andThen(new RunCommand(
+                            () -> m_robotDrive.setX(),
+                            m_robotDrive));
+
+                // return new MoveSetDistance(m_robotDrive, 4.67)
+                //     .andThen(new MoveSetDistance(m_robotDrive, -2))
+                //     .andThen(new WaitCommand(.5))
+                //     .andThen(new AutoBalance(m_robotDrive))
+                //     .andThen(new RunCommand(
+                //             () -> m_robotDrive.setX(),
+                //             m_robotDrive));
+
+            default: 
+                return new ExtendToPoint(Constants.Arm.Extension.Encoder.k_Min, m_ArmExt)
+                    .andThen(m_Pneumatics.closeClaw())
+                    .andThen(new TiltToPoint(0.1429, m_Arm))
+
+                    .andThen(new ExtendToPoint(Constants.Arm.Extension.Encoder.k_Max, m_ArmExt))
+                    .andThen(new WaitCommand(1))
+
+                    .andThen(m_Pneumatics.openClaw())
+
+                    .andThen(new ExtendToPoint(16250, m_ArmExt))
+                    .andThen(new ExtendToPoint(Constants.Arm.Extension.Encoder.k_Min, m_ArmExt))
+
+                    .andThen(new TiltToPoint(0, m_Arm).alongWith(
+                            new ExtendToPoint(Constants.Arm.Extension.Encoder.k_Min, m_ArmExt))
+                            
+                    .andThen(new MoveSetDistance(m_robotDrive, 4.67)));
+        }
     }
 }
