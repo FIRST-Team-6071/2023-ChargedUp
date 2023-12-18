@@ -15,6 +15,7 @@ import frc.robot.commands.MoveSetDistance;
 import frc.robot.commands.TiltToPoint;
 import frc.robot.subsystems.ArmExtensionSubsystem;
 import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.BlinkenLights;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.PneumaticsSubsystem;
 import frc.robot.subsystems.ShuffleboardSubsystem;
@@ -39,6 +40,8 @@ public class RobotContainer {
     private final ShuffleboardSubsystem m_ShuffleboardSubsystem = new ShuffleboardSubsystem(m_Arm, m_robotDrive,
             m_ArmExt);
 
+    private final BlinkenLights m_BlinkenLights = new BlinkenLights();
+
     // The driver's controller
     XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
     CommandXboxController m_armController = new CommandXboxController(OIConstants.kArmControllerPort);
@@ -61,7 +64,7 @@ public class RobotContainer {
                                 MathUtil.applyDeadband(m_driverController.getLeftY(), 0.06),
                                 MathUtil.applyDeadband(m_driverController.getLeftX(), 0.06),
                                 MathUtil.applyDeadband(m_driverController.getRightX(), 0.06),
-                                false, true),
+                                true, true),
                         m_robotDrive));
     }
 
@@ -156,9 +159,10 @@ public class RobotContainer {
                             new ExtendToPoint(Constants.Arm.Extension.Encoder.k_Min, m_ArmExt)))
 
                     .andThen(() -> m_robotDrive.drive(0, 0, 0, false, false))
-                    .andThen(new MoveSetDistance(m_robotDrive, 4.67))
+                    .andThen(new MoveSetDistance(m_robotDrive, 5.0))
+                    .andThen(new WaitCommand(0.5))
                     .andThen(new MoveSetDistance(m_robotDrive, -2.4))
-                    .andThen(new WaitCommand(.5))
+                    .andThen(new WaitCommand(1))
                     .andThen(new AutoBalance(m_robotDrive))
                     .andThen(new RunCommand(
                             () -> m_robotDrive.setX(),

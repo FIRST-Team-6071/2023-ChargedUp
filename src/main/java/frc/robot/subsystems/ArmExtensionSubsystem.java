@@ -30,12 +30,12 @@ public class ArmExtensionSubsystem extends SubsystemBase {
     // Check if the extension has done a zeroing procedure yet. If not, don't run
     // the motor too fast.
     if (!hasExtensionZeroed) {
-      m_ExtensionMotor.set(TalonSRXControlMode.PercentOutput, -Constants.Arm.Extension.k_LimitSpeed);
+      m_ExtensionMotor.set(TalonSRXControlMode.PercentOutput, Constants.Arm.Extension.k_LimitSpeed);
     } else if (-m_ExtensionMotor.getSelectedSensorPosition() < Constants.Arm.Extension.Encoder.k_Max) {
       if ((-m_ExtensionMotor.getSelectedSensorPosition() / Constants.Arm.Extension.Encoder.k_Max) > 0.75) {
-        m_ExtensionMotor.set(TalonSRXControlMode.PercentOutput, -Constants.Arm.Extension.k_LimitSpeed);
+        m_ExtensionMotor.set(TalonSRXControlMode.PercentOutput, Constants.Arm.Extension.k_LimitSpeed);
       } else {
-        m_ExtensionMotor.set(TalonSRXControlMode.PercentOutput, -Constants.Arm.Extension.k_NormalSpeed);
+        m_ExtensionMotor.set(TalonSRXControlMode.PercentOutput, Constants.Arm.Extension.k_NormalSpeed);
       }
     } else {
       StopExtension();
@@ -46,20 +46,19 @@ public class ArmExtensionSubsystem extends SubsystemBase {
     // Check if the extension has done a zeroing procedure yet. If not, don't run
     // the motor too fast.
     if (!hasExtensionZeroed) {
-      m_ExtensionMotor.set(TalonSRXControlMode.PercentOutput, Constants.Arm.Extension.k_LimitSpeed);
+      m_ExtensionMotor.set(TalonSRXControlMode.PercentOutput, -Constants.Arm.Extension.k_LimitSpeed);
     } else if (-m_ExtensionMotor.getSelectedSensorPosition() > Constants.Arm.Extension.Encoder.k_Min
-        && (!extensionSwitchLeft.get() && // Do NOT move the arm in if one of our limit switches is active.
-            !extensionSwitchRight.get())) {
+        && (!extensionSwitchLeft.get())) {
       if ((-m_ExtensionMotor.getSelectedSensorPosition() / Constants.Arm.Extension.Encoder.k_Max) < 0.25) {
-        m_ExtensionMotor.set(TalonSRXControlMode.PercentOutput, Constants.Arm.Extension.k_LimitSpeed);
+        m_ExtensionMotor.set(TalonSRXControlMode.PercentOutput, -Constants.Arm.Extension.k_LimitSpeed);
       } else {
-        m_ExtensionMotor.set(TalonSRXControlMode.PercentOutput, Constants.Arm.Extension.k_NormalSpeed);
+        m_ExtensionMotor.set(TalonSRXControlMode.PercentOutput, -Constants.Arm.Extension.k_NormalSpeed);
       }
     } else {
       StopExtension();
     }
 
-    if (extensionSwitchLeft.get() && extensionSwitchRight.get()) {
+    if (extensionSwitchLeft.get()) {
       m_ExtensionMotor.setSelectedSensorPosition(0);
       hasExtensionZeroed = true;
     }
@@ -80,7 +79,7 @@ public class ArmExtensionSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    if ((extensionSwitchLeft.get() && extensionSwitchRight.get()) && !hasExtensionZeroed) {
+    if ((extensionSwitchLeft.get()) && !hasExtensionZeroed) {
       m_ExtensionMotor.setSelectedSensorPosition(0);
       hasExtensionZeroed = true;
     }

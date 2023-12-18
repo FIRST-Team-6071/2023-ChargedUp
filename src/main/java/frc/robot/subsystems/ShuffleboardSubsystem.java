@@ -66,7 +66,8 @@ public class ShuffleboardSubsystem extends SubsystemBase {
   }
 
   public String getChosenAuton() {
-    return "side";
-    // return m_autoChooser.getSelected();
+    // return "center";
+    System.out.println(m_autoChooser.getSelected());
+    return m_autoChooser.getSelected();
   }
 }

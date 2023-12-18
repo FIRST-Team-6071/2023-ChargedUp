@@ -151,6 +151,10 @@ public final class Constants {
 
   }
 
+  public static final class Blinken {
+    public static final int k_LedPWM = 9;
+  }
+
   public static final class Arm {
 
     public static final class Tilt {
